@@ -7,3 +7,7 @@
 - Seperate auth server on Azure Cloud for managing JWT tokens and refresh keys
 - SSL (https) checks
 - Swagger integration for documentation?
+
+
+https://github.com/M-Atkins/REST-JWT-Task/assets/43812266/227df7cd-47dd-4413-a7c7-65c7dc73bcd5
+

@@ -7,21 +7,25 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);#
+//db
 builder.Services.AddDbContext<UserDb>( opt => opt.UseInMemoryDatabase("Users"));
 
 //Logs
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+//JWT Auth and Scheme Config
 builder.Services.AddAuthentication(options =>
     {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    //lambda to configure Jwt Bearer options
 }).AddJwtBearer(o =>
 {
     o.TokenValidationParameters = new TokenValidationParameters
     {
+        //Jwt Issuer, Audience and key defined in appsettings.development.json
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey
@@ -33,7 +37,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-//Authorization, add Admin role and Policy.
+//Add auth, (use auth invoked by default)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -52,17 +56,21 @@ Users.MapPost("/", CreateUser);
 Users.MapPut("/", UpdateUser);
 Users.MapDelete("/", DeleteUser);
 
+//Return JWT Token
 Jwt.MapPost("/generateToken", GenerateToken);
 
 app.Run();
 
+//Asks for email (primary key), password and checks in user db if user exists and possword matches.
 async Task<IResult> GenerateToken(string email, string password, UserDb db)
 {
     //Lookup
     var check = await db.Users.FindAsync(email);
 
+    //match
     if (await db.Users.FindAsync(email) is User user && check.Password == password) 
     {
+        //assign params
         var issuer = builder.Configuration["Jwt:Issuer"];
         var audience = builder.Configuration["Jwt:Audience"];
         var key = Encoding.ASCII.GetBytes
@@ -83,13 +91,16 @@ async Task<IResult> GenerateToken(string email, string password, UserDb db)
             SigningCredentials = new SigningCredentials
             (new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha512Signature)
+            //Create key and define + generate hash/hash type
         };
+        //return token
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
         var stringToken = tokenHandler.WriteToken(token);
         return Results.Ok(stringToken);
     }
+    //else 401
     return Results.Unauthorized();
 }
 
@@ -108,6 +119,7 @@ static async Task<IResult> GetUser(string email, UserDb db)
             : TypedResults.NotFound();
 }
 
+//db add and save, return results from primary key as user object
 static async Task<IResult> CreateUser(User user, UserDb db)
 {
     db.Users.Add(user);
@@ -119,11 +131,13 @@ static async Task<IResult> CreateUser(User user, UserDb db)
 //PUT requests to change properties of Users
 static async Task<IResult> UpdateUser(string email, User inputField, UserDb db)
 {
+    //Lookup
     var user = await db.Users.FindAsync(email);
 
+    //If user doesn't exist, 404
     if (user is null) return TypedResults.NotFound();
 
-    //Reassign with args
+    //Reassign using args
     user.Name = inputField.Name;
     user.Email = inputField.Email;
     user.Password = inputField.Password;
@@ -137,10 +151,13 @@ static async Task<IResult> UpdateUser(string email, User inputField, UserDb db)
 //Remove User by key (email) and save
 static async Task<IResult> DeleteUser(string email, UserDb db)
 {
+    //check if user exists in db
     if (await db.Users.FindAsync(email) is User user)
     {
+        //remove and change
         db.Users.Remove(user);
         await db.SaveChangesAsync();
+        //if successful 204
         return TypedResults.NoContent();
     }
     //if not found return 404

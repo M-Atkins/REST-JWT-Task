@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);#
+var builder = WebApplication.CreateBuilder(args);
 //db
 builder.Services.AddDbContext<UserDb>( opt => opt.UseInMemoryDatabase("Users"));
 

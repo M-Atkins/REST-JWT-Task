@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("apishorttask")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+11bb6d7ecf7bd90dd7a4c2b2f78bcf9a836ef6c3")]
 [assembly: System.Reflection.AssemblyProductAttribute("apishorttask")]
 [assembly: System.Reflection.AssemblyTitleAttribute("apishorttask")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

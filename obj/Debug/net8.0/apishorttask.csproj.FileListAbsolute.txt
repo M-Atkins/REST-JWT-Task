@@ -59,3 +59,4 @@
 /home/zeus/Documents/dotnet/apishorttask/obj/Debug/net8.0/apishorttask.pdb
 /home/zeus/Documents/dotnet/apishorttask/obj/Debug/net8.0/apishorttask.genruntimeconfig.cache
 /home/zeus/Documents/dotnet/apishorttask/obj/Debug/net8.0/ref/apishorttask.dll
+/home/zeus/Documents/dotnet/apishorttask/obj/Debug/net8.0/apishorttask.sourcelink.json

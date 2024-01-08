@@ -5,7 +5,7 @@
 - Create policies and scopes to allow for multiple tiers of authorization
 - Assign TTL to JWT tokens and create a Refresh Token to manage JWTs (Can't have API tokens that last forever!)
 - Separate auth server on Azure Cloud for managing JWT tokens and refresh keys
-- SSL (https) checks
+- SSL (https) checks / enforcement
 - Swagger integration for documentation?
 
 
